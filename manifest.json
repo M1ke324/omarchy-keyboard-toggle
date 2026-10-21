@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.m1ke324.keyboard-toggle",
   "name": "Keyboard Toggle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "M1ke324",
   "license": "MIT",
   "description": "Disable and re-enable the built-in laptop keyboard, with a bar dot shown while it is off",

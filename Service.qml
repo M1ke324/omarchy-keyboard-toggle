@@ -20,13 +20,41 @@ Item {
 
   Commons.Translations { id: strings; directory: Qt.resolvedUrl("i18n") }
 
+  // Disabling from the keybinding happens while its modifiers are still held,
+  // and a disabled keyboard never sends their release, so SUPER would stay
+  // stuck once it comes back. Wait in Hyprland until they are let go (at most
+  // five seconds). Bumping keyboard_toggle_wait cancels a wait still pending,
+  // so an enable that lands first is not undone by it.
+  readonly property string enableLua:
+    "keyboard_toggle_wait = (keyboard_toggle_wait or 0) + 1\n"
+    + "hl.device({ name = name, enabled = true })"
+  readonly property string disableLua:
+    "keyboard_toggle_wait = (keyboard_toggle_wait or 0) + 1\n"
+    + "local wait, tries = keyboard_toggle_wait, 0\n"
+    + "local mods = { 'Super_L', 'Super_R', 'Control_L', 'Control_R', 'Alt_L', 'Alt_R',\n"
+    + "  'Shift_L', 'Shift_R', 'ISO_Level3_Shift' }\n"
+    + "local function held()\n"
+    + "  for _, key in ipairs(mods) do if hl.is_key_down(key) then return true end end\n"
+    + "  return false\n"
+    + "end\n"
+    + "local function try()\n"
+    + "  if wait ~= keyboard_toggle_wait then return end\n"
+    + "  tries = tries + 1\n"
+    + "  if held() and tries < 100 then\n"
+    + "    hl.timer(try, { timeout = 50, type = 'oneshot' })\n"
+    + "  else\n"
+    + "    hl.device({ name = name, enabled = false })\n"
+    + "  end\n"
+    + "end\n"
+    + "try()"
+
   // The device name reaches Hyprland as a quoted Lua string built in bash from
   // argv, never interpolated into the command line.
   function apply(enabled) {
     applyProc.command = ["bash", "-c",
       "name=${1//\\\\/\\\\\\\\}; name=${name//\\\"/\\\\\\\"}; "
-        + "hyprctl eval \"hl.device({ name = \\\"$name\\\", enabled = $2 })\" >/dev/null",
-      "keyboard-toggle", root.device, enabled ? "true" : "false"]
+        + "hyprctl eval \"local name = \\\"$name\\\"\n$2\" >/dev/null",
+      "keyboard-toggle", root.device, enabled ? root.enableLua : root.disableLua]
     applyProc.running = true
   }
 
