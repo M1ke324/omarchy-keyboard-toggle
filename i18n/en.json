@@ -1,0 +1,5 @@
+{
+  "osd.enabled": "Keyboard enabled",
+  "osd.disabled": "Keyboard disabled",
+  "bar.tooltip": "Keyboard disabled (click to enable it)"
+}

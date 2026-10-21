@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.m1ke324.keyboard-toggle",
+  "name": "Keyboard Toggle",
+  "version": "1.0.0",
+  "author": "M1ke324",
+  "license": "MIT",
+  "description": "Disable and re-enable the built-in laptop keyboard, with a bar dot shown while it is off",
+  "kinds": [
+    "service",
+    "bar-widget"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Keyboard Toggle",
+    "description": "Dot shown while the built-in keyboard is disabled",
+    "category": "Input",
+    "defaultSection": "right",
+    "allowMultiple": false
+  }
+}

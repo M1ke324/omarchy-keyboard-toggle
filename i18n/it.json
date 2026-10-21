@@ -1,0 +1,5 @@
+{
+  "osd.enabled": "Tastiera attivata",
+  "osd.disabled": "Tastiera disattivata",
+  "bar.tooltip": "Tastiera disattivata (clic per riattivarla)"
+}
